@@ -2,7 +2,8 @@ package model;
 
 public abstract class MoneyReceiver {
     protected int amount;
-    abstract void makePayment(Product product);
+
+    public abstract void makePayment(Product product);
 
     public int getAmount() {
         return amount;
