@@ -1,2 +1,16 @@
 1) git clone https://github.com/pooreshqq/HW-25.git - для копирования папки проекта из репозитория к себе локальное на ноут
-2) 
+2) git add commands.txt - добавил отслеживание файла commands.txt
+3) git commit -m "Added commands.txt" - сделала коммит о том, что добавил текстовый файл
+4) git add src/model/MoneyReceiver.java - добавляю файл для коммита
+5) git status - проверяю, какие файлы у меня готовы к коммиту
+6) git commit -m "Added abstract class MoneyReceiver" - коммит о том, что я создал абстрактный класс
+7) git add src/model/CardAcceptor.java - для отслеживания CardAcceptor файла
+8) git commit -m "Added CardAcceptor class for alternative payment method, extended with MoneyReceiver class, added method \"enterCardInfo\" to get card info, implemented method \"makePayment\"" - делаю коммит с объяснением что я добавил
+9) git add src/model/CoinAcceptor.java - чтобы добавить файл в следующий коммит
+10) git add src/model/MoneyReceiver.java - тоже самое
+11) git commit -m "Changed makePayment method to public abstract in abstract class MoneyReceiver and removed field amount in CoinAcceptor" - описываю изменения и делаю коммит
+12) git add src/AppRunner.java - добавляю файл для коммита
+13) git commit -m "Added changePaymentMethod for changing payment method, added isCoinAcceptor method to check if payment method is CoinAcceptor, added setPaymentMethod method to set payment method in constructor, added 2 lines in constructor to create CardAcceptor variable and MoneyReceiver parent variable, added verification if we use CoinAcceptor or CardAcceptor when we want to top up our balance, added new choise \" o - поменять метод оплаты\" and added logic for it"
+14) git add commands.txt - добавляю этот файл, чтобы потом закоммитить все, что я здесь написал
+15) git commit -m "Recorded all commands that i used" - описание и коммит
+16) git push - отправление всех файлов репозиторий
