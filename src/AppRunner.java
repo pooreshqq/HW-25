@@ -9,7 +9,9 @@ public class AppRunner {
 
     private final UniversalArray<Product> products = new UniversalArrayImpl<>();
 
-    private final CoinAcceptor coinAcceptor;
+    private MoneyReceiver MoneyReceiver;
+    private CardAcceptor cardAcceptor;
+    private CoinAcceptor coinAcceptor;
 
     private static boolean isExit = false;
 
@@ -22,7 +24,9 @@ public class AppRunner {
                 new Mars(ActionLetter.F, 80),
                 new Pistachios(ActionLetter.G, 130)
         });
+        cardAcceptor = new CardAcceptor(150);
         coinAcceptor = new CoinAcceptor(100);
+        MoneyReceiver = setPaymentMethod();
     }
 
     public static void run() {
@@ -36,7 +40,11 @@ public class AppRunner {
         print("В автомате доступны:");
         showProducts(products);
 
-        print("Монет на сумму: " + coinAcceptor.getAmount());
+        if(isCoinAcceptor()){
+            print("Монет на сумму: " + MoneyReceiver.getAmount());
+        } else{
+            print("Денег на карте: " + MoneyReceiver.getAmount());
+        }
 
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         allowProducts.addAll(getAllowedProducts().toArray());
@@ -47,7 +55,7 @@ public class AppRunner {
     private UniversalArray<Product> getAllowedProducts() {
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         for (int i = 0; i < products.size(); i++) {
-            if (coinAcceptor.getAmount() >= products.get(i).getPrice()) {
+            if (MoneyReceiver.getAmount() >= products.get(i).getPrice()) {
                 allowProducts.add(products.get(i));
             }
         }
@@ -55,32 +63,70 @@ public class AppRunner {
     }
 
     private void chooseAction(UniversalArray<Product> products) {
-        print(" a - Пополнить баланс");
+        if(isCoinAcceptor()){
+            print(" a - Пополнить баланс");
+        }
         showActions(products);
+        print(" o - поменять метод оплаты");
         print(" h - Выйти");
         String action = fromConsole().substring(0, 1);
-        if ("a".equalsIgnoreCase(action)) {
-            coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
+        if ("a".equalsIgnoreCase(action) && isCoinAcceptor()) {
+            MoneyReceiver.setAmount(MoneyReceiver.getAmount() + 10);
             print("Вы пополнили баланс на 10");
             return;
         }
         try {
             for (int i = 0; i < products.size(); i++) {
                 if (products.get(i).getActionLetter().equals(ActionLetter.valueOf(action.toUpperCase()))) {
-                    coinAcceptor.setAmount(coinAcceptor.getAmount() - products.get(i).getPrice());
-                    print("Вы купили " + products.get(i).getName());
+                    MoneyReceiver.makePayment(products.get(i));
                     break;
                 }
             }
         } catch (IllegalArgumentException e) {
             if ("h".equalsIgnoreCase(action)) {
                 isExit = true;
+            } else if("o".equalsIgnoreCase(action)){
+                changePaymentMethod();
             } else {
-                print("Недопустимая буква. Попрбуйте еще раз.");
+                print("Недопустимая буква. Попробуйте еще раз.");
                 chooseAction(products);
             }
         }
 
+
+    }
+
+    private void changePaymentMethod() {
+        if(this.MoneyReceiver instanceof CoinAcceptor){
+            this.MoneyReceiver = this.cardAcceptor;
+        }
+        else{
+            this.MoneyReceiver = this.coinAcceptor;
+        }
+    }
+
+    private boolean isCoinAcceptor(){
+        if(this.MoneyReceiver instanceof CoinAcceptor){
+            return true;
+        }
+        return false;
+    }
+
+    private MoneyReceiver setPaymentMethod() {
+        print("Выберите начальный метод оплаты: ");
+        print(" a - оплата картой");
+        print(" b - оплата монетами");
+        String action;
+        while(true){
+            action = fromConsole().substring(0, 1);
+            if ("a".equalsIgnoreCase(action)) {
+                return this.cardAcceptor;
+            } else if ("b".equalsIgnoreCase(action)) {
+                return this.coinAcceptor;
+            } else {
+                print("Недопустимая буква. Попробуйте еще раз.");
+            }
+        }
 
     }
 
